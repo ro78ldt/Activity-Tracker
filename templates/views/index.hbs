@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fitness Tracker</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Include Chart.js library -->
+</head>
+<body>
+    <header>
+        <h1>Fitness Tracker</h1>
+    </header>
+    <main>
+        <!-- Workout Data Entry Form -->
+        <section class="data-entry">
+            <h2>Enter Workout Data</h2>
+            <form id="workout-form">
+                <label for="exercise-type">Exercise Type:
+                    <select id="workout-type" name="workout-type">
+                        <option value="cardio">Cardio</option>
+                        <option value="strength">Strength Training</option>
+                        <option value="yoga">Yoga</option>
+                    </select>
+                </label>
+                <label for="duration">Duration (minutes):</label>
+                <input type="number" id="duration" name="duration" min="1" required>
+
+                <label for="intensity">Intensity (1-10):</label>
+                <input type="number" id="intensity" name="intensity" min="1" max="10" required>
+
+                <label for="calories-burned">Calories Burned:</label>
+                <input type="number" id="calories-burned" name="calories-burned" min="0" required>
+
+                <button type="submit">Submit Workout Data</button>
+            </form>
+        </section>
+
+        <!-- Meal Data Entry Form -->
+        <section class="data-entry">
+            <h2>Enter Meal Data</h2>
+            <form id="meal-form">
+                <label for="meal-name">Meal Name:</label>
+                <input type="text" id="meal-name" name="meal-name" required>
+
+                <label for="calories-consumed">Calories Consumed:</label>
+                <input type="number" id="calories-consumed" name="calories-consumed" min="0" required>
+
+                <label for="meal-description">Meal Description:</label>
+                <textarea id="meal-description" name="meal-description" rows="4" required></textarea>
+
+                <button type="submit">Submit Meal Data</button>
+            </form>
+        </section>
+
+        <!-- Display Statistics -->
+        <section class="data-entry">
+            <h2>Statistics</h2>
+            <div>
+                <p>Total Calories Burned: <span id="total-calories-burned">0</span></p>
+                <p>Total Calories Consumed: <span id="total-calories-consumed">0</span></p>
+                <p>Net Calories: <span id="net-calories">0</span></p>
+                <p>Average Workout Duration: <span id="average-workout-duration">0</span> minutes</p>
+            </div>
+        </section>
+
+       
+
+        <!-- Progress Chart -->
+        <section class="data-entry" id="chart-section">
+            <h2>Progress Chart</h2>
+            <canvas id="progress-chart" width="400" height="200"></canvas>
+        </section>
+    </main>
+
+    <center><button class="btn-logout" onclick="logOutHandler()">Logout</button></center>
+    <script>
+         const logOutHandler = () => {
+            window.sessionStorage.clear();
+            window.location.reload(true);
+            window.location.replace('/');
+        } 
+
+        if (!sessionStorage.getItem("token")) {
+            window.location.href = "http://localhost:5000"
+        }
+    const ctx = document.getElementById('progress-chart').getContext('2d');
+    const progressChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: [],
+            datasets: [
+                {
+                    label: 'Calories Burned',
+                    data: [],
+                    borderColor: 'rgb(75, 192, 192)',
+                    fill: false,
+                },
+            ],
+        },
+        options: {
+            responsive: true,
+            scales: {
+                x: {
+                    display: true,
+                    title: {
+                        display: true,
+                        text: 'Time Period',
+                    },
+                },
+                y: {
+                    display: true,
+                    title: {
+                        display: true,
+                        text: 'Calories Burned',
+                    },
+                },
+            },
+        },
+    });
+
+    // Save workout data to localStorage
+    function saveWorkoutData(workoutData) {
+        const workouts = JSON.parse(localStorage.getItem('workouts')) || [];
+        workouts.push(workoutData);
+        localStorage.setItem('workouts', JSON.stringify(workouts));
+    }
+
+    // Get workout data from localStorage
+    function getWorkoutData() {
+        return JSON.parse(localStorage.getItem('workouts')) || [];
+    }
+
+    // Save meal data to localStorage
+    function saveMealData(mealData) {
+        const meals = JSON.parse(localStorage.getItem('meals')) || [];
+        meals.push(mealData);
+        localStorage.setItem('meals', JSON.stringify(meals));
+    }
+
+    // Get meal data from localStorage
+    function getMealData() {
+        return JSON.parse(localStorage.getItem('meals')) || [];
+    }
+
+    // Update statistics and chart
+    function updateDataAndChart() {
+        const workoutData = getWorkoutData();
+        const mealData = getMealData();
+
+        let totalCaloriesBurned = 0;
+        let totalCaloriesConsumed = 0;
+        let totalDuration = 0;
+
+        for (const data of workoutData) {
+            totalCaloriesBurned += data.caloriesBurned;
+            totalDuration += data.duration;
+        }
+
+        for (const meal of mealData) {
+            totalCaloriesConsumed += meal.caloriesConsumed;
+        }
+
+        // Calculate and display the net calories (burned - consumed)
+        const netCalories = totalCaloriesBurned - totalCaloriesConsumed;
+        document.getElementById('net-calories').textContent = netCalories;
+
+        const averageDuration = totalDuration / (workoutData.length || 1);
+
+        document.getElementById('total-calories-burned').textContent = totalCaloriesBurned;
+        document.getElementById('total-calories-consumed').textContent = totalCaloriesConsumed;
+        document.getElementById('average-workout-duration').textContent = averageDuration.toFixed(2);
+
+        const labels = workoutData.map(item => item.date);
+        const dataPoints = workoutData.map(item => item.caloriesBurned);
+
+        progressChart.data.labels = labels;
+        progressChart.data.datasets[0].data = dataPoints;
+        progressChart.update();
+    }
+
+    // Event listeners for submitting workout and meal data
+    document.getElementById('workout-form').addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        const exerciseType = document.getElementById('workout-type').value;
+        const duration = parseInt(document.getElementById('duration').value);
+        const intensity = parseInt(document.getElementById('intensity').value);
+        const caloriesBurned = parseInt(document.getElementById('calories-burned').value);
+
+        const workoutData = {
+            exerciseType,
+            duration,
+            intensity,
+            caloriesBurned,
+            date: new Date().toLocaleDateString(),
+        };
+
+        saveWorkoutData(workoutData);
+        updateDataAndChart();
+        e.target.reset();
+    });
+
+    document.getElementById('meal-form').addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        const mealName = document.getElementById('meal-name').value;
+        const caloriesConsumed = parseInt(document.getElementById('calories-consumed').value);
+        const mealDescription = document.getElementById('meal-description').value;
+
+        const mealData = {
+            mealName,
+            caloriesConsumed,
+            mealDescription,
+            date: new Date().toLocaleDateString(),
+        };
+
+        saveMealData(mealData);
+        updateDataAndChart();
+        e.target.reset();
+    });
+
+</script>
+</body>
+</html>

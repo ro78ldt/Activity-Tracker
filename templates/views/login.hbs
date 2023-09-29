@@ -1,0 +1,61 @@
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Fitness Tracker Login</title>
+    <link rel="stylesheet" href="login.css" />
+  </head>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+  <body>
+    <script>
+      const loginSubmitHandler = async()=> { 
+       const username =
+      document.getElementById('login-username').value; 
+      const password = document.getElementById('login-password').value; 
+      const loginapi = await axios.post("http://localhost:5000/auth", 
+      { data: {username, password}, })
+      if (loginapi?.data?.token) { 
+        sessionStorage.setItem("token", loginapi?.data?.token); 
+        window.location.href = "http://localhost:5000/index"; 
+      }
+      }
+
+    </script>
+    
+      <form class="login-form">
+        <h1>Login to Fitness Tracker</h1>
+        <div class="container">
+          <label for="login-username"><b>Username</b></label>
+          <input
+            type="text"
+            placeholder="Enter Username"
+            name="username"
+            id="login-username"
+            required
+          />
+          <div id='errorMsg'></div>
+          <label for="login-password"><b>Password</b></label>
+          <input
+            type="password"
+            placeholder="Enter Password"
+            name="password"
+            id="login-password"
+            required
+          />
+          <div id='errorMsg'></div>
+          <center><button class="login-btn"
+              type="button"
+              onclick="loginSubmitHandler()"
+            >Login</button></center>
+          <label>
+            <input type="checkbox" checked="checked" name="remember" />
+            Remember me
+          </label>
+        </div>
+
+        <div class="container" style="background-color:#f1f1f1">
+            <center><span>New User? <a href="register">Sign Up</a></span></center>
+        </div>
+      </form>
+  </body>
+</html>

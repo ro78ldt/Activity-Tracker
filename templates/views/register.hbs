@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fitness Tracker Sign Up</title>
+<link rel="stylesheet" href="register.css">
+</head>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<body>
+
+<script>
+  const signUpSubmitHandler = async()=> {
+    const username = document.getElementById('signup-username').value;
+    const password = document.getElementById('signup-password').value;
+    const confirmpassword = document.getElementById("psw-repeat").value;
+    const fullname = document.getElementById("fullname").value; 
+    const age = document.getElementById("age").value;
+    const weight = document.getElementById("weight").value;
+    const height = document.getElementById("height").value;
+
+    const signupapi = await axios.post("http://localhost:5000/signup", {
+    data: {username, password, confirmpassword, fullname, age, weight, height},
+  })
+   if (signupapi?.data?.token) {
+      sessionStorage.setItem("token", signupapi?.data?.token);
+      window.location.href = "http://localhost:5000/index";
+    }
+} 
+</script>
+
+<form id="signup-form">
+  <h1>Sign Up to Fitness Tracker</h1>
+  <div class="container">
+    <label for="signup-username"><b>Username</b></label>
+    <input type="text" placeholder="Enter Username" name="username" id="signup-username" required >
+
+    <label for="signup-password"><b>Password</b></label>
+    <input type="password" placeholder="Enter Password" name="password" id="signup-password" required>
+
+    <label for="psw-repeat"><b>Confirm Password</b></label>
+    <input type="password" placeholder="Confirm Password" name="confirmpassword" id="psw-repeat" required>
+
+    <label for="fullname"><b>Full Name</b></label>
+    <input type="text" placeholder="Enter Full Name" name="fullname" id="fullname" minlength="1" maxlength="20" required>
+
+    <label for="age"><b>Age</b></label>
+    <input type="number" placeholder="Enter Age" name="age" id="age" min="10" max="100" required>
+
+    <label for="weight"><b>Weight (kg)</b></label>
+    <input type="number" placeholder="Enter Weight (kg)" name="weight" id="weight" min="20" max="200" required>
+
+    <label for="height"><b>Height (cm)</b></label>
+    <input type="number" placeholder="Enter Height (cm)" name="height" id="height" min="50" maxlength="300" required>
+
+    <label for="dob"><b>Date of Birth</b></label>
+    <input type="date" name="dob" required>
+        
+    <center><button type="button" onclick="signUpSubmitHandler()">Sign Up</button></center>
+     <a href="http://localhost:5000">
+      <center><button type="button" class="cancelbtn">Cancel</button></center>
+    </a>
+  </div>
+   
+  </div>
+</form>
+</body>
+</html>
