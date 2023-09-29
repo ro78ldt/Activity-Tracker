@@ -2,7 +2,7 @@
 
 We, a group of five web developers, Rajavarapu Mohan Maruthi, Chennamsetty Venkata Sai Padmini, Kodati Sri Sai, Dhaanyasri Akshika K and myself Pratim Roy, had built this fitness tracking application. A detailed documentation of the project can be found in the documentation folder.
 
-#Run Locally
+<h1>Run Locally</h1>
 
 Clone the project
 ```git clone https://github.com/INFOTRIXS/9-Fitness-Tracker.git```
