@@ -14,10 +14,10 @@ Start the server
 ```npm run dev```
 
 #Made with love by
-- @mohan8749 
-- @srisai98
-- @dhaanyasri-akshika
-- @Padminichennamsetty
+https://github.com/mohan8749
+https://github.com/srisai98
+https://github.com/dhaanyasri-akshika
+https://github.com/Padminichennamsetty
 
 
 
