@@ -4,7 +4,7 @@ We, a group of five web developers, Rajavarapu Mohan Maruthi, Chennamsetty Venka
 
 <h1>Run Locally</h1>
 
-Clone the project
+Clone the project from master branch
 ```git clone https://github.com/INFOTRIXS/9-Fitness-Tracker.git```
 
 Install the dependencies
