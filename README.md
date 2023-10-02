@@ -5,8 +5,11 @@ providing them with a comprehensive overview of their fitness progress. The user
 
 <h1>Tech stack</h1>
 Client: HTML, CSS, JS
+<br>
 Server: Node JS, Express JS
+<br>
 Database: Mongo DB
+<br>
 I have used Handlebars templating for this application. It guarantees minimal template complexity and operates as a logicless templating engine, diligently maintaining a clear boundary between the presentation layer and the underlying code.
 It seamlessly integrates with Express as the hbs module, conveniently accessible via npm.
 
